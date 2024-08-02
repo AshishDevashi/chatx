@@ -2,6 +2,8 @@ import React from "react";
 import { Image, StyleSheet, View } from "react-native";
 import AppText from "@/component/AppText";
 import AppButton from "@/component/AppButton";
+import { Link } from "expo-router";
+import LinkButton from "@/component/LinkButton";
 
 export default function Onboarding() {
   return (
@@ -17,8 +19,12 @@ export default function Onboarding() {
         resizeMode="cover"
       />
       <View style={styles.buttonContainer}>
-        <AppButton color="white" size="full">Create an account</AppButton>
-        <AppButton size="sm" variant="linked">Login</AppButton>
+        <LinkButton href="/register" color="white" size="full">
+          Create an account
+        </LinkButton>
+        <LinkButton href="/login" size="sm" variant="linked">
+          Login
+        </LinkButton>
       </View>
     </View>
   );
@@ -40,8 +46,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: '50%',
-    marginTop:-40,
+    height: "50%",
+    marginTop: -40,
   },
   buttonContainer: {
     paddingHorizontal: 28,
