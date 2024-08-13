@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -18,7 +18,8 @@ interface AppInputProps {
   placeholder?: string;
   label?: string;
   helperText?: string;
-  style?: ViewStyle 
+  multiline?: boolean;
+  style?: ViewStyle;
 }
 
 const AppInput: React.FC<AppInputProps> = ({
@@ -30,7 +31,9 @@ const AppInput: React.FC<AppInputProps> = ({
   placeholder,
   label,
   helperText,
-  style
+  multiline,
+  style,
+  ...reset
 }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const { colors } = useTheme();
@@ -38,21 +41,27 @@ const AppInput: React.FC<AppInputProps> = ({
   const handleFocus = () => setIsActive(true);
   const handleBlur = () => setIsActive(false);
 
-  const inputStyle: TextStyle = {
-    ...styles.input,
-    borderColor: isActive
-      ? colors.border
-      : error
-      ? colors.notification
-      : undefined,
-    borderWidth: isActive || error ? 1 : 0,
-    ...style,
-  };
-
+  const inputStyle = useMemo<TextStyle>(
+    () => ({
+      ...styles.input,
+      borderColor: isActive
+        ? colors.border
+        : error
+        ? colors.notification
+        : undefined,
+      borderWidth: isActive || error ? 1 : 0,
+      ...style,
+    }),
+    [error, isActive]
+  );
   return (
     <View style={styles.container}>
       {label && (
-        <AppText size="md" weight="regular" style={{textTransform:'capitalize'}}>
+        <AppText
+          size="md"
+          weight="regular"
+          style={{ textTransform: "capitalize" }}
+        >
           {label}
         </AppText>
       )}
@@ -63,31 +72,35 @@ const AppInput: React.FC<AppInputProps> = ({
         onChangeText={onChange}
         keyboardType={isNumber ? "number-pad" : "default"}
         secureTextEntry={isPassword}
+        multiline={multiline}
         onFocus={handleFocus}
         onBlur={handleBlur}
+        {...reset}
       />
       {error ? (
         <AppText size="md" color="action">
           {error}
         </AppText>
       ) : (
-        <AppText size="md">{helperText}</AppText>
+        false
       )}
+      {helperText ? <AppText size="md">{helperText}</AppText> : false}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 8,
+    marginTop: 8,
   },
   input: {
     height: 50,
     paddingHorizontal: 14,
     backgroundColor: "white",
     borderRadius: 4,
-    color: "#8593A8",
-    fontSize:15
+    color: "#728197",
+    fontSize: 14,
+    fontFamily: "SpaceGrotesk-Regular",
   },
 });
 
