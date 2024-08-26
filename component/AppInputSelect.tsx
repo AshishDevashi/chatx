@@ -51,8 +51,9 @@ const AppInput: React.FC<AppInputProps> = ({
         <Picker
           selectedValue={value}
           onValueChange={onChange}
-          placeholder={placeholder}
+          // placeholder={placeholder}
         >
+          <Picker.Item style={styles.item} label={placeholder} value={""} />
           {data.map((item, index) => (
             <Picker.Item
               style={styles.item}

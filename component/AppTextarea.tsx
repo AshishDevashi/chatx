@@ -1,7 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, View, TextInput, ViewStyle } from "react-native";
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  ViewStyle,
+  TextStyle,
+} from "react-native";
 import AppText from "./AppText";
 import HStack from "./HStack";
+import { useTheme } from "@react-navigation/native";
 
 interface Props {
   value: string;
@@ -32,15 +39,32 @@ const AppTextarea: React.FC<Props> = ({
   ...rest
 }) => {
   const [count, setCount] = useState<number>(value?.length || 0);
+  const [isActive, setIsActive] = useState(false);
+  const { colors } = useTheme();
 
   useEffect(() => {
     setCount(value?.length || 0);
   }, [value]);
+  const handleFocus = () => setIsActive(true);
+  const handleBlur = () => setIsActive(false);
 
   const handleChangeText = (text: string) => {
     setCount(text.length);
     onChange(text);
   };
+  const inputStyle = useMemo<TextStyle>(
+    () => ({
+      ...styles.container,
+      borderColor: isActive
+        ? colors.border
+        : error
+        ? colors.notification
+        : undefined,
+      borderWidth: isActive || error ? 1 : 0,
+      ...style,
+    }),
+    [error, isActive]
+  );
 
   return (
     <View style={style}>
@@ -52,7 +76,7 @@ const AppTextarea: React.FC<Props> = ({
         )}
         {rightLabelTsx ? rightLabelTsx : false}
       </HStack>
-      <View style={styles.container}>
+      <View style={inputStyle}>
         <TextInput
           value={value}
           multiline={true}
@@ -60,6 +84,8 @@ const AppTextarea: React.FC<Props> = ({
           maxLength={maxLength}
           onChangeText={handleChangeText}
           style={styles.input}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           {...rest}
         />
         {maxLength && (
@@ -68,6 +94,13 @@ const AppTextarea: React.FC<Props> = ({
           </AppText>
         )}
       </View>
+      {error ? (
+        <AppText size="md" color="action">
+          {error}
+        </AppText>
+      ) : (
+        false
+      )}
       {helperText && (
         <AppText size="sm" color="primary">
           {helperText}

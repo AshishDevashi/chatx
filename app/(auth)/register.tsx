@@ -1,4 +1,5 @@
 import {
+  Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -15,14 +16,16 @@ import AppButton from "@/component/AppButton";
 import AppTextarea from "@/component/AppTextarea";
 import * as Clipboard from "expo-clipboard";
 import { useTheme } from "@react-navigation/native";
+import * as DocumentPicker from "expo-document-picker";
 
-const GENDER = ["Male", "Female"];
+const GENDER = ["Other", "Male", "Female"];
 const initialState = {
   username: "",
-  gender: "Male",
+  gender: "",
   interested: "",
   keyPhrase: "",
   isAccepted: false,
+  picture: [],
 };
 
 interface Errors {
@@ -31,6 +34,7 @@ interface Errors {
   interested?: string;
   keyPhrase?: string;
   isAccepted?: string;
+  picture?: string;
 }
 export default function Register() {
   const [formData, setFormData] = React.useState(initialState);
@@ -38,10 +42,7 @@ export default function Register() {
   const [copy, setCopy] = useState(false);
   const { colors } = useTheme();
 
-  const handleChange = (
-    name: keyof typeof formData,
-    value: string | boolean
-  ) => {
+  const handleChange = (name: keyof typeof formData, value: any) => {
     setFormData((prevState) => ({ ...prevState, [name]: value }));
     setErros((prevState) => ({ ...prevState, [name]: "" }));
   };
@@ -69,9 +70,14 @@ export default function Register() {
       newErrors.isAccepted = "Accept terms and conditions";
       isValid = false;
     }
+    if (!formData.picture.length) {
+      newErrors.picture = "Picture is required";
+      isValid = false;
+    }
     setErros(newErrors);
     return isValid;
   };
+
   const CopyComponet = () => {
     const handlePress = async () => {
       await Clipboard.setStringAsync(formData.keyPhrase);
@@ -93,8 +99,15 @@ export default function Register() {
       </TouchableOpacity>
     );
   };
+  const handleDocumentPicker = async () => {
+    const document = await DocumentPicker.getDocumentAsync();
+    if (!document.canceled) {
+      handleChange("picture", document.assets);
+    }
+  };
 
-  const { gender, interested, isAccepted, keyPhrase, username } = formData;
+  const { gender, interested, isAccepted, keyPhrase, username, picture } =
+    formData;
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
@@ -102,15 +115,37 @@ export default function Register() {
           <AppText color="black" size="xl" weight="semibold">
             Create new account
           </AppText>
-          <TouchableOpacity style={styles.borderBtn}>
-            <Feather name="plus" color={"#8593A8"} size={30} />
-          </TouchableOpacity>
-          <AppText size="lg" weight="medium">
-            Upload a picture
-          </AppText>
-          <AppText size="md" weight="light">
-            (Automatically created as an NFT asset)
-          </AppText>
+          <View style={{ alignItems: "center" }}>
+            {picture.length ? (
+              <TouchableOpacity onPress={handleDocumentPicker}>
+                <Image
+                  source={{ uri: picture[0].uri }}
+                  style={styles.picture}
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={[
+                  styles.picture,
+                  styles.borderBtn,
+                  errors.picture ? { borderColor: colors.notification } : false,
+                ]}
+                onPress={handleDocumentPicker}
+              >
+                <Feather
+                  name="plus"
+                  color={errors.picture ? colors.notification : "#8593A8"}
+                  size={30}
+                />
+              </TouchableOpacity>
+            )}
+            <AppText size="lg" weight="medium">
+              {picture.length ? "Change" : "Upload"} a picture
+            </AppText>
+            <AppText size="md" weight="light">
+              (Automatically created as an NFT asset)
+            </AppText>
+          </View>
         </View>
         <View style={{ marginTop: 30, gap: 10 }}>
           <AppInput
@@ -170,18 +205,23 @@ const styles = StyleSheet.create({
     paddingTop: 70,
   },
   borderBtn: {
-    width: 80,
-    height: 80,
     borderWidth: 2,
     borderColor: "#8593A8",
-    borderRadius: 10,
     borderStyle: "dashed",
     alignItems: "center",
     justifyContent: "center",
+  },
+  picture: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
     marginTop: 30,
     marginBottom: 15,
   },
   keyPhraseInput: {
     height: 70,
+  },
+  errorBorder: {
+    borderColor: "red",
   },
 });
