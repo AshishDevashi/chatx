@@ -9,7 +9,6 @@ import "react-native-reanimated";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  // Load fonts
   const [loaded] = useFonts({
     "Chillax-Variable": require("../assets/fonts/Chillax-Variable.ttf"),
     "SpaceGrotesk-Bold": require("../assets/fonts/SpaceGrotesk-Bold.ttf"),
@@ -35,7 +34,8 @@ export default function RootLayout() {
     >
       <Stack>
         {/* Add your screens here */}
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        {/* <Stack.Screen name="(auth)" options={{ headerShown: false }} /> */}
+        <Stack.Screen name="(chat)" options={{ headerShown: false }} />
         <Stack.Screen name="index" options={{ headerShown: false }} />
       </Stack>
     </ThemeProvider>

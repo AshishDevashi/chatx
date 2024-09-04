@@ -5,13 +5,14 @@ import {
   View,
   TextStyle,
   ViewStyle,
+  TextInputProps,
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import AppText from "./AppText";
 
-interface AppInputProps {
+interface AppInputProps extends TextInputProps {
   value: string;
-  onChange: (text: string) => void;
+  onChange: (rext: any) => void;
   isPassword?: boolean;
   isNumber?: boolean;
   error?: string | false;
@@ -33,7 +34,7 @@ const AppInput: React.FC<AppInputProps> = ({
   helperText,
   multiline,
   style,
-  ...reset
+  ...props
 }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const { colors } = useTheme();
@@ -68,6 +69,7 @@ const AppInput: React.FC<AppInputProps> = ({
       <TextInput
         style={inputStyle}
         placeholder={placeholder}
+        placeholderTextColor="#d3d3d3"
         value={value}
         onChangeText={onChange}
         keyboardType={isNumber ? "number-pad" : "default"}
@@ -75,7 +77,7 @@ const AppInput: React.FC<AppInputProps> = ({
         multiline={multiline}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        {...reset}
+        {...props}
       />
       {error ? (
         <AppText size="md" color="action">

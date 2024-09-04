@@ -22,7 +22,7 @@ export default function Onboarding() {
         <LinkButton href="/register" color="white" size="full">
           Create an account
         </LinkButton>
-        <LinkButton href="/login" size="sm" variant="linked">
+        <LinkButton href="/FriendList" size="sm" variant="linked">
           Login
         </LinkButton>
       </View>

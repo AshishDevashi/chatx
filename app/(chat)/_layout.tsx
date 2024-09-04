@@ -1,18 +1,18 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
-const AuthLayout = () => {
+const ChatLayout = () => {
   return (
     <>
       <Stack>
         <Stack.Screen
-          name="register"
+          name="FriendList"
           options={{
             headerShown: false,
           }}
         />
         <Stack.Screen
-          name="login"
+          name="message"
           options={{
             headerShown: false,
           }}
@@ -23,4 +23,4 @@ const AuthLayout = () => {
   );
 };
 
-export default AuthLayout;
+export default ChatLayout;

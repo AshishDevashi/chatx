@@ -48,12 +48,13 @@ const AppInput: React.FC<AppInputProps> = ({
         </AppText>
       )}
       <View style={inputStyle}>
-        <Picker
-          selectedValue={value}
-          onValueChange={onChange}
-          // placeholder={placeholder}
-        >
-          <Picker.Item style={styles.item} label={placeholder} value={""} />
+        <Picker selectedValue={value} onValueChange={onChange}>
+          <Picker.Item
+            style={styles.item}
+            label={placeholder}
+            value={""}
+            enabled={false}
+          />
           {data.map((item, index) => (
             <Picker.Item
               style={styles.item}
@@ -84,6 +85,11 @@ const styles = StyleSheet.create({
   },
   item: {
     color: "#728197",
+    fontSize: 14,
+    fontFamily: "SpaceGrotesk-Regular",
+  },
+  placeholder: {
+    color: "#d3d3d3",
     fontSize: 14,
     fontFamily: "SpaceGrotesk-Regular",
   },
